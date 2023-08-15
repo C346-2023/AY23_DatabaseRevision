@@ -33,9 +33,9 @@ public class InsertActivity extends AppCompatActivity {
                 // Create the DBHelper object, passing in the activity's Context
                 DBHelper db = new DBHelper(InsertActivity.this);
 
-
-                db.insertTask();
+                db.insertTask(etContent.getText().toString(), Integer.parseInt(etPriority.getText().toString()));
                 db.close();
+
             }
         });
 

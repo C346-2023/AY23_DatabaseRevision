@@ -1,10 +1,12 @@
 package com.myapplicationdev.databaserevision;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,13 +36,20 @@ public class RetrieveActivityListView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Create the DBHelper object, passing in the activity's Context
+                DBHelper db = new DBHelper(RetrieveActivityListView.this);
 
+                //Retrieve notes records in Note objects, to be displayed in ListView
+                DBHelper db2 = new DBHelper(RetrieveActivityListView.this);
+                db2.close();
+
+                al.clear();
+                al.addAll(db2.getNotesInObjects());
+                aa.notifyDataSetChanged();
             }
         });
 
 
         //Option: Implement dialog to edit a record
-        //Option: Implement context to delete a record
 
     }
 }

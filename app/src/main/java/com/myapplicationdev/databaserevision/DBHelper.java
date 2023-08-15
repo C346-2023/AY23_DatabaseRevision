@@ -1,6 +1,6 @@
 package com.myapplicationdev.databaserevision;
 
-//on your development machine, open a browser, go to http://10.0.2.2:8080
+//on your development machine, open a browser, go to http://10.0.2.16:8080
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,28 +38,38 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int  newVersion) {
+        // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTE);
+        // Create table(s) again
         onCreate(db);
     }
 
     public void insertTask(String content, int priority){
         SQLiteDatabase db = this.getWritableDatabase();
-        //Todo complete this
-
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CONTENT, content);
+        values.put(COLUMN_PRIORITY, priority);
+        db.insert(TABLE_NOTE, null, values);
     }
 
     public ArrayList<String> getNotesInStrings() {
         ArrayList<String> tasks = new ArrayList<String>();
 
-        String selectQuery = "SELECT " + COLUMN_CONTENT  + " FROM " + TABLE_NOTE;
+        String selectQuery = "SELECT " + COLUMN_ID + ", "
+                + COLUMN_CONTENT + ", "
+                + COLUMN_PRIORITY
+                + " FROM " + TABLE_NOTE
+                + " ORDER BY " + COLUMN_PRIORITY + " ASC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
-                //data retrieval in String
-                //tasks.add(cursor.getString(0));
+                int id = cursor.getInt(0);
+                String content = cursor.getString(1);
+                String priority = cursor.getString(2);
+                tasks.add(id + ", " + content + ", " + priority);
             } while (cursor.moveToNext());
         }
 
@@ -82,9 +92,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                //data retrieval in object
-
-                //notes.add(obj);
+                //data retrieval
+                int id = cursor.getInt(0);
+                String content = cursor.getString(1);
+                int priority = cursor.getInt(2);
+                Note obj = new Note (id, content, priority);
+                notes.add(obj);
             } while (cursor.moveToNext());
         }
 
@@ -92,9 +105,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return notes;
     }
-
-    //Edit?
-    //Delete?
 
 }
 
